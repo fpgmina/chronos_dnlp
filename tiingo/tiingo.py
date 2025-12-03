@@ -5,7 +5,7 @@ from typing import Tuple
 from dataset.ts_dataset import TimeSeriesRegressionDataset
 from tiingo import TiingoClient
 
-TIINGO_API_KEY = "63a212473489b88a0406ce83cad2a801ef188bf0" 
+TIINGO_API_KEY = "63a212473489b88a0406ce83cad2a801ef188bf0"
 TIINGO_BASE_URL = "https://api.tiingo.com/tiingo/daily/"
 TIINGO_CONFIG = {"session": True, "api_key": TIINGO_API_KEY}
 

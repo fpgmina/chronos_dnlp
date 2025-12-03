@@ -40,3 +40,4 @@ dependencies:
     - tiingo
     - transformers
     - datasets
+    - chronos-forecasting

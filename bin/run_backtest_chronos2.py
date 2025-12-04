@@ -7,7 +7,7 @@ import warnings
 
 warnings.filterwarnings(
     "ignore",
-    message="'pin_memory' argument is set as true but not supported on MPS now"
+    message="'pin_memory' argument is set as true but not supported on MPS now",
 )
 
 
@@ -17,7 +17,7 @@ def run():
     pipeline = Chronos2Pipeline.from_pretrained(
         "amazon/chronos-2",
         device_map=get_device(),
-        torch_dtype=torch.float32, 
+        torch_dtype=torch.float32,
     )
     results = run_chronos_sliding_backtest(
         pipeline=pipeline,

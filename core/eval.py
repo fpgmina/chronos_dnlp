@@ -3,11 +3,9 @@ import numpy as np
 from tqdm import tqdm
 from utils import compute_metrics
 
+
 def chronos_one_step_forecast(
-    pipeline,
-    window_df,       # shape (T, N)
-    device,
-    quantile_idx=4   # default = median
+    pipeline, window_df, device, quantile_idx=4  # shape (T, N)  # default = median
 ):
     """
     Returns:
@@ -15,10 +13,9 @@ def chronos_one_step_forecast(
     """
 
     # (T, N) → (N, T) → (1, N, T)
-    context = torch.tensor(
-        window_df.values.T,
-        dtype=torch.float32
-    ).unsqueeze(0).to(device)
+    context = (
+        torch.tensor(window_df.values.T, dtype=torch.float32).unsqueeze(0).to(device)
+    )
 
     forecast = pipeline.predict(
         context,
@@ -33,7 +30,7 @@ def chronos_one_step_forecast(
 
 def run_chronos_sliding_backtest(
     pipeline,
-    df_returns,     # full TxN returns DataFrame
+    df_returns,  # full TxN returns DataFrame
     device,
     context_length=200,
     start_idx=None,
@@ -61,8 +58,8 @@ def run_chronos_sliding_backtest(
 
     for t in tqdm(range(start_idx, T - 1)):
 
-        window = df.iloc[t - context_length : t]   # (T, N)
-        y_true = df.iloc[t].values                  # (N,)
+        window = df.iloc[t - context_length : t]  # (T, N)
+        y_true = df.iloc[t].values  # (N,)
 
         y_pred = chronos_one_step_forecast(
             pipeline=pipeline,
@@ -101,5 +98,3 @@ def summarize_backtest_results(results):
     }
 
     return agg
-
-

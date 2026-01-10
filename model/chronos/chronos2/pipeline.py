@@ -113,7 +113,6 @@ class Chronos2Pipeline(BaseChronosPipeline):
         min_past: int | None = None,
         finetuned_ckpt_name: str = "finetuned-ckpt",
         callbacks: list["TrainerCallback"] | None = None,
-        cross_learning: bool = False,   #MODIFIED
         remove_printer_callback: bool = False,
         disable_data_parallel: bool = True,
         **extra_trainer_kwargs,
@@ -154,9 +153,6 @@ class Chronos2Pipeline(BaseChronosPipeline):
         min_past
             The minimum number of time steps the context must have during fine-tuning. All time series shorter than `min_past + prediction_length`
             are filtered out, by default set equal to prediction_length
-        cross_learning # MODIFIED
-            If True, enable cross-learning by ensuring all tasks share a group_id when one is not provided. When using
-            group-aware finetuning, pass inputs with explicit `group_id` values to control mixing within groups.
         finetuned_ckpt_name
             The name of the directory inside `output_dir` in which the final fine-tuned checkpoint will be saved, by default "finetuned-ckpt"
         callbacks
@@ -232,16 +228,6 @@ class Chronos2Pipeline(BaseChronosPipeline):
 
         if min_past is None:
             min_past = prediction_length
-
-        if cross_learning:
-            if isinstance(inputs, list) and all(isinstance(x, dict) for x in inputs):
-                inputs = [{**task, "group_id": task.get("group_id", 0)} for task in inputs]
-            if validation_inputs is not None and isinstance(validation_inputs, list) and all(
-                isinstance(x, dict) for x in validation_inputs
-            ):
-                validation_inputs = [
-                    {**task, "group_id": task.get("group_id", 0)} for task in validation_inputs
-                ]
 
 
         train_dataset = Chronos2Dataset.convert_inputs(
